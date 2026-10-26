@@ -1,0 +1,113 @@
+# ============================================================
+# jdk-source-analysis 仓库忽略规则
+# 说明：本仓库主体是「笔记 .md + src/ 下的 JDK 源码副本」，
+#      以下规则用于阻止 IDE、构建产物、日志、压缩包等无关内容入库。
+#      注意：src/ 已被纳入版本管理（用户明确要求），故不在此忽略。
+# ============================================================
+
+# ---------- 操作系统 ----------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# ---------- 编辑器 / IDE ----------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+*.swp
+*.swo
+*~
+.obsidian/
+.obsidian.bak/
+
+# ---------- Java 构建产物 ----------
+target/
+build/
+out/
+bin/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+.gradle/
+.classpath.bak
+
+# ---------- 依赖与包管理 ----------
+node_modules/
+vendor/
+
+# ---------- 日志与临时文件 ----------
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.pid
+nohup.out
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# ---------- 压缩包 / 镜像（避免仓库膨胀） ----------
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.iso
+*.dmg
+
+# ---------- 二进制大文件 / 数据库文件 ----------
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.class.bak
+*.db
+*.sqlite
+*.sqlite3
+*.mdb
+
+# ---------- 密钥与本地配置（防止误提交） ----------
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.pfx
+*credentials*
+!*.example
+
+# ---------- 覆盖率与测试报告 ----------
+coverage/
+.nyc_output/
+*.exec
+jacoco.exec
+surefire-reports/
+
+# ---------- 可选：若将来想排除 JDK 源码副本，取消下面两行注释即可 ----------
+# 执行前需先：git rm -r --cached src
+# /src/
