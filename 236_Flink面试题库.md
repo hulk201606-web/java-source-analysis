@@ -1,4 +1,4 @@
-# 236 · Flink 高频面试题库（45 题 · 详解）
+# 236 · Flink 高频面试题库（50 题 · 详解）
 
 > **方向**：架构与资源、事件时间/Watermark、窗口、状态与 Checkpoint、Exactly-Once、SQL 与调优  
 > **面试权重**：⭐⭐⭐⭐⭐（流计算必问）  
@@ -573,7 +573,72 @@
 
 ---
 
-## 七、速记清单
+## 八、进阶补充（Q46–Q50）
+
+### Q46. Flink SQL 的 Regular Join 状态为什么会膨胀？如何治理？
+
+**结论**：双流普通 Join 需长期保留两侧数据以匹配未来到达的记录，状态无界增长；用时间区间/窗口/TTL 约束。
+
+**机制**：
+- Regular Join 不设时间边界，两侧状态持续累积。
+- Interval Join/窗口 Join 可限定时间范围。
+- 状态 TTL 可清理过期数据。
+- RocksDB + 增量 Checkpoint 降低存储压力。
+
+**追问**：能完全避免状态膨胀吗？不能，需按业务定义可接受的时间边界；状态机制见 [Q27](236_Flink面试题库.md)。
+
+### Q47. Flink 的 Async I/O 怎么用？
+
+**结论**：用 AsyncDataStream 并发调用外部系统，避免同步阻塞，需控制并发、超时与顺序。
+
+**机制**：
+- `orderedWait` 保序，`unorderedWait` 吞吐更高。
+- 设置 capacity 与 timeout。
+- 外部客户端需支持异步/连接池。
+- 失败要有降级与重试策略。
+
+**追问**：Async I/O 能提升吞吐吗？能，但受外部系统容量限制，需限流。
+
+### Q48. Watermark 对齐（Watermark Alignment）解决什么问题？
+
+**结论**：当某个分区 Watermark 过快或过慢时，对齐机制限制超前 Watermark，避免下游窗口长时间等待或状态膨胀。
+
+**机制**：
+- 对多输入/多分片限制 Watermark 领先幅度。
+- 通过对齐组配置阈值。
+- 缓解数据倾斜与空闲分区问题。
+- 空闲源仍可用 idle timeout。
+
+**追问**：对齐会降低实时性吗？会牺牲部分超前处理，换取稳定与状态可控。
+
+### Q49. Flink 的关键 Metrics 与监控怎么做？
+
+**结论**：监控吞吐、延迟、反压、Checkpoint、状态大小、GC 与 Kafka lag，结合 UI 与外部系统告警。
+
+**机制**：
+- numRecordsIn/Out、busyTime。
+- Checkpoint 时长/大小/失败数。
+- 反压与网络缓冲。
+- 状态大小与 RocksDB 指标。
+- 端到端延迟。
+
+**追问**：反压高先看什么？下游算子耗时、数据倾斜、外部 IO 与并行度。
+
+### Q50. Flink 在 Kubernetes 上如何弹性部署？
+
+**结论**：用 Flink Kubernetes Operator 管理 JobManager/TaskManager，结合 K8s 弹性、Checkpoint 存储与 HA。
+
+**机制**：
+- Operator 管理提交、升级、Savepoint。
+- 原生 K8s 模式按需申请 Pod。
+- 对象存储保存 Checkpoint/Savepoint。
+- 配置 HA 与资源配额。
+
+**追问**：弹性扩容会丢状态吗？不会，但需 Savepoint/Checkpoint 与 state 兼容。
+
+---
+
+## 九、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -589,4 +654,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：45 题 · 详解**
+**题目数量：50 题 · 详解**

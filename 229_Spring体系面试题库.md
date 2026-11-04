@@ -1,4 +1,4 @@
-# 229 · Spring 体系高频面试题库（45 题 · 详解）
+# 229 · Spring 体系高频面试题库（50 题 · 详解）
 
 > **方向**：IoC/DI、Bean 生命周期、循环依赖、AOP、事务、MVC、Spring Boot 自动配置  
 > **面试权重**：⭐⭐⭐⭐⭐（Java 后端必问）  
@@ -585,7 +585,71 @@
 
 ---
 
-## 六、速记清单
+## 六、进阶补充（Q46–Q50）
+
+### Q46. Spring Cache 抽象如何工作？
+
+**结论**：通过 AOP 拦截注解方法，按 CacheManager 读写缓存，支持 TTL、条件与同步。
+
+**机制**：
+- `@Cacheable` 命中直接返回，未命中执行方法并写入。
+- `@CachePut` 更新缓存。
+- `@CacheEvict` 删除缓存。
+- 需要配置 CacheManager 与 KeyGenerator。
+
+**追问**：缓存注解会失效吗？自调用、代理未生效、key 冲突都会导致失效。
+
+### Q47. @Async 与 @Scheduled 的实现原理是什么？
+
+**结论**：@Async 通过代理把方法提交到 TaskExecutor；@Scheduled 由调度器按 cron/固定频率触发。
+
+**机制**：
+- `@EnableAsync` 注册异步代理。
+- 默认使用 SimpleAsyncTaskExecutor，生产应自定义线程池。
+- `@EnableScheduling` 注册 ScheduledAnnotationBeanPostProcessor。
+- 多实例定时任务需分布式锁防重复。
+
+**追问**：@Async 会丢异常吗？会，需配置 AsyncUncaughtExceptionHandler 或返回 Future。
+
+### Q48. Spring TestContext 框架有什么用？
+
+**结论**：为测试提供容器上下文缓存、依赖注入、事务回滚与 MockMvc 等能力。
+
+**机制**：
+- `@SpringBootTest` 启动上下文。
+- 上下文按配置缓存，减少重复启动。
+- `@MockBean`/`@SpyBean` 替换 Bean。
+- `@Transactional` 测试自动回滚。
+
+**追问**：测试很慢怎么办？缩小上下文、使用切片测试、避免频繁 @MockBean 导致缓存失效。
+
+### Q49. Spring Security OAuth2 Resource Server 如何校验 JWT？
+
+**结论**：通过 Bearer Token 过滤器解析 JWT，使用公钥/Issuer 校验签名与声明，再转换为 Authentication。
+
+**机制**：
+- 配置 `JwtDecoder` 与 issuer-uri。
+- 校验签名、过期、iss/aud。
+- 权限映射为 GrantedAuthority。
+- 可结合方法级授权。
+
+**追问**：JWT 过期怎么处理？客户端刷新令牌，服务端拒绝过期 Token；基础见 [225 Q36–Q37](225_JavaSecurity与Crypto面试题库.md)。
+
+### Q50. @ConfigurationProperties 如何绑定与校验？
+
+**结论**：按前缀绑定配置到对象，支持嵌套、宽松绑定与 JSR-380 校验。
+
+**机制**：
+- `@ConfigurationProperties(prefix="app")`。
+- 构造器/Setter 绑定。
+- `@Validated` + 约束注解校验。
+- 需注册或使用 `@EnableConfigurationProperties`。
+
+**追问**：绑定失败会怎样？启动失败并提示字段错误，需检查类型与配置键。
+
+---
+
+## 七、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -601,4 +665,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：45 题 · 详解**
+**题目数量：50 题 · 详解**
