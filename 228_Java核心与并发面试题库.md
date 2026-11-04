@@ -1,4 +1,4 @@
-# 228 · Java 核心与并发高频面试题库（45 题 · 详解）
+# 228 · Java 核心与并发高频面试题库（50 题 · 详解）
 
 > **方向**：集合、并发基础、AQS/线程池、JMM、JVM/GC  
 > **面试权重**：⭐⭐⭐⭐⭐（Java 后端必问）  
@@ -578,7 +578,71 @@
 
 ---
 
-## 六、速记清单
+## 六、进阶补充（Q46–Q50）
+
+### Q46. JDK 动态代理的原理是什么？
+
+**结论**：运行时生成实现接口的代理类，方法调用转发给 InvocationHandler，可统一增强逻辑。
+
+**机制**：
+- `Proxy.newProxyInstance` 生成字节码。
+- 代理类实现接口并调用 handler.invoke。
+- 只能代理接口，不能代理类。
+- Spring AOP 与小框架常用。
+
+**追问**：动态代理性能如何？早期有反射开销，现代 JVM 可优化；细节见 [008](008_反射与异步编程.md)。
+
+### Q47. 注解在运行时如何生效？
+
+**结论**：注解需 `@Retention(RUNTIME)`，通过反射读取，再由框架/代理执行相应逻辑。
+
+**机制**：
+- 类/方法/字段上的注解可通过反射获取。
+- 注解本身不执行逻辑。
+- 框架解析后生成代理或注册处理器。
+- 保留策略决定是否进入 class 文件。
+
+**追问**：注解能改变方法行为吗？不能直接改变，需框架解释或字节码增强。
+
+### Q48. Java SPI 机制是什么？
+
+**结论**：通过 `META-INF/services` 声明接口实现，ServiceLoader 运行时加载，实现插件化。
+
+**机制**：
+- 接口 + 实现类配置。
+- `ServiceLoader.load` 遍历实现。
+- JDK SPI 会实例化所有实现。
+- Dubbo SPI 做了增强（按 key、Adaptive）。
+
+**追问**：SPI 如何打破双亲委派？使用线程上下文类加载器加载实现；Dubbo SPI 见 [221 Q7](221_Dubbo面试题库.md)。
+
+### Q49. Random、ThreadLocalRandom 与 SecureRandom 有什么区别？
+
+**结论**：Random 共享种子有竞争；ThreadLocalRandom 每线程独立、无竞争但不安全；SecureRandom 密码学安全但更慢。
+
+**机制**：
+- Random 使用 CAS 更新种子。
+- ThreadLocalRandom 避免竞争，适合高并发。
+- SecureRandom 使用熵源，适合密钥/令牌。
+- 三者用途不同，不能混用。
+
+**追问**：ThreadLocalRandom 能做令牌吗？不能，它是可预测伪随机；安全场景见 [225 Q5](225_JavaSecurity与Crypto面试题库.md)。
+
+### Q50. BigDecimal 使用时要注意什么？
+
+**结论**：用字符串/价值构造，指定精度与舍入模式，比较用 compareTo，避免 equals 的 scale 差异。
+
+**机制**：
+- `new BigDecimal(double)` 有二进制误差。
+- 除法必须指定 scale 与 RoundingMode。
+- equals 比较值+scale，compareTo 只比较值。
+- 金额计算统一精度。
+
+**追问**：BigDecimal 线程安全吗？不可变且线程安全，但运算会创建新对象。
+
+---
+
+## 七、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -594,4 +658,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：45 题 · 详解**
+**题目数量：50 题 · 详解**
