@@ -1,4 +1,4 @@
-# 229 · Spring 体系高频面试题库（50 题 · 详解）
+# 229 · Spring 体系高频面试题库（55 题 · 详解）
 
 > **方向**：IoC/DI、Bean 生命周期、循环依赖、AOP、事务、MVC、Spring Boot 自动配置  
 > **面试权重**：⭐⭐⭐⭐⭐（Java 后端必问）  
@@ -649,7 +649,71 @@
 
 ---
 
-## 七、速记清单
+## 七、进阶补充（Q51–Q55）
+
+### Q51. Spring Batch 适合什么场景？
+
+**结论**：面向批量任务的分片、事务、重试、跳过与监控框架，适合大数据量离线处理。
+
+**机制**：
+- Job/Step 定义批处理流程。
+- Chunk 分片与事务边界。
+- 失败重试/跳过策略。
+- 元数据表记录执行状态。
+
+**追问**：和定时任务区别？Batch 强调数据分片、重启与可观测，不只是一次调度。
+
+### Q52. Spring Integration 是什么？
+
+**结论**：基于消息通道的企业集成框架，用 Adapter/Gateway 连接文件、JMS、HTTP、数据库等。
+
+**机制**：
+- Message Channel 解耦生产/消费。
+- Inbound/Outbound Adapter。
+- 路由、过滤、转换。
+- 适合系统间数据流转。
+
+**追问**：和 MQ 区别？Integration 是集成编排层，可对接多种 MQ/协议；MQ 只是其中一种通道。
+
+### Q53. Spring Data JPA 的工作原理是什么？
+
+**结论**：通过 Repository 接口动态生成实现，把方法名/注解解析为查询，底层用 JPA EntityManager。
+
+**机制**：
+- Repository 代理生成 CRUD。
+- 方法名派生查询。
+- `@Query` 自定义 SQL/JPQL。
+- 分页/排序与 Specification。
+
+**追问**：JPA 性能问题在哪？懒加载、N+1、脏检查与大批量操作，需按场景优化。
+
+### Q54. Spring WebSocket 如何工作？
+
+**结论**：用 WebSocketHandler 处理连接与消息，配置 HandshakeInterceptor 与消息代理，支持广播。
+
+**机制**：
+- `@EnableWebSocket` 注册 Handler。
+- Text/BinaryMessage 处理。
+- STOMP 可用消息代理。
+- 会话管理与心跳。
+
+**追问**：集群下如何广播？用 Redis/MQ 做会话与消息共享；Netty WebSocket 见 [220 Q46](220_Netty面试题库.md)。
+
+### Q55. Spring 事件机制与事务事件如何配合？
+
+**结论**：ApplicationEventPublisher 发布事件，监听器默认同步；事务事件可在提交后执行。
+
+**机制**：
+- `@EventListener` 注册监听。
+- `@TransactionalEventListener` 绑定阶段。
+- 默认同步，异步需 @Async。
+- 事务回滚时不执行 AFTER_COMMIT。
+
+**追问**：监听器异常会影响主流程吗？同步监听会，需异步/隔离异常；事件机制见 [019](019_Spring扩展点源码解析.md)。
+
+---
+
+## 八、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -665,4 +729,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：50 题 · 详解**
+**题目数量：55 题 · 详解**

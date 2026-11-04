@@ -1,4 +1,4 @@
-# 220 · Netty 高频面试题库（50 题 · 详解）
+# 220 · Netty 高频面试题库（55 题 · 详解）
 
 > **方向**：Netty 4.1.x 线程模型、Pipeline、ByteBuf、编解码与工程实践  
 > **面试权重**：⭐⭐⭐⭐⭐（网络框架必问）  
@@ -624,7 +624,71 @@
 
 ---
 
-## 九、速记清单
+## 九、进阶补充（Q51–Q55）
+
+### Q51. Netty 的 DNS Resolver 有什么用？
+
+**结论**：`DnsAddressResolverGroup` 异步解析域名，支持自定义 DNS 服务器与缓存，避免阻塞 EventLoop。
+
+**机制**：
+- 基于 Netty 的 DNS 客户端。
+- 支持 UDP/TCP 与 DoH（取决于实现）。
+- 可配置缓存与超时。
+- 解析失败触发重连/降级。
+
+**追问**：为什么不用 InetAddress？它会阻塞解析，影响 EventLoop；基础见 [Q4](220_Netty面试题库.md)。
+
+### Q52. HAProxy Protocol 是什么？
+
+**结论**：在 TCP 连接前附加真实客户端 IP/端口，让后端获取原始来源，适用于代理链。
+
+**机制**：
+- 代理在连接头写入 PROXY 协议行。
+- 后端 Handler 解析并设置来源。
+- 需要代理与后端都支持。
+- 防止来源 IP 被覆盖。
+
+**追问**：没有 HAProxy Protocol 会怎样？后端只能看到代理 IP，影响风控与日志。
+
+### Q53. ChannelGroup 有什么用？
+
+**结论**：批量管理一组 Channel，统一广播、关闭与统计，适合推送/会话管理。
+
+**机制**：
+- `ChannelGroup.add` 注册 Channel。
+- `writeAndFlush` 广播消息。
+- 自动移除关闭的 Channel。
+- 支持按组统计与关闭。
+
+**追问**：ChannelGroup 线程安全吗？是，内部使用并发集合。
+
+### Q54. Netty 的堆外内存如何监控？
+
+**结论**：监控 ByteBuf 分配、池化 Arena、泄漏检测与 JVM NMT，防止 Direct Memory 持续上涨。
+
+**机制**：
+- `ResourceLeakDetector` 检测未释放。
+- NMT 查看 JVM 本地内存。
+- 系统指标看进程 RSS。
+- 限制池化内存与分配器参数。
+
+**追问**：堆 dump 看不到堆外内存怎么办？用 NMT/系统工具；泄漏检测见 [Q21](220_Netty面试题库.md)。
+
+### Q55. Netty 与 gRPC 的关系是什么？
+
+**结论**：gRPC-Java 底层可基于 Netty 传输 HTTP/2，Netty 提供连接、编解码与事件循环。
+
+**机制**：
+- gRPC 使用 HTTP/2 帧与 Protobuf。
+- Netty 负责网络传输与 Pipeline。
+- 自定义 Handler 与 gRPC 编解码协作。
+- 适合 RPC/流式调用。
+
+**追问**：能直接用 Netty 实现 gRPC 吗？可以但工作量大，通常用 gRPC-Java；Triple 见 [221 Q37](221_Dubbo面试题库.md)。
+
+---
+
+## 十、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -638,4 +702,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：50 题 · 详解**
+**题目数量：55 题 · 详解**
