@@ -1,4 +1,4 @@
-# 229 · Spring 体系高频面试题库（40 题 · 详解）
+# 229 · Spring 体系高频面试题库（45 题 · 详解）
 
 > **方向**：IoC/DI、Bean 生命周期、循环依赖、AOP、事务、MVC、Spring Boot 自动配置  
 > **面试权重**：⭐⭐⭐⭐⭐（Java 后端必问）  
@@ -519,7 +519,73 @@
 
 ---
 
-## 五、速记清单
+## 五、进阶补充（Q41–Q45）
+
+### Q41. Spring Security 的认证授权链路是怎样的？
+
+**结论**：FilterChain 拦截请求 → AuthenticationManager 认证 → SecurityContext 保存身份 → AuthorizationManager 做授权。
+
+**机制**：
+- `SecurityContextPersistenceFilter` 恢复上下文。
+- 用户名密码/Token 过滤器触发认证。
+- `ProviderManager` 调用 `UserDetailsService` 与密码编码器。
+- 授权过滤器按角色/权限判断。
+- 认证结果放入 SecurityContext。
+
+**追问**：JWT 无状态认证放哪一层？放在自定义 Filter，解析后设置 SecurityContext，并做令牌校验。
+
+### Q42. Spring Boot 3 的 AOT 与 Native Image 支持是什么？
+
+**结论**：Spring AOT 在构建期生成反射/资源提示，配合 GraalVM Native Image 生成快速启动的原生可执行文件。
+
+**机制**：
+- AOT 处理 Bean 定义、代理与反射元数据。
+- Native Image 需要 runtime hints。
+- 启动快、内存低，但动态能力受限。
+- 需验证框架与库的兼容性。
+
+**追问**：所有 Spring 应用都适合 Native Image 吗？大量动态代理/脚本/反射的框架需额外配置，成本较高；通用 AOT/CDS/Graal 对比见 [227 Q41](227_Java9+新特性面试题库.md)。
+
+### Q43. Spring 的参数校验是如何生效的？
+
+**结论**：基于 Bean Validation（JSR-380），`@Valid`/`@Validated` 触发校验，失败抛异常由全局异常处理转换。
+
+**机制**：
+- Controller 参数加 `@Valid` 触发方法参数校验。
+- 类级别 `@Validated` 支持方法校验。
+- `MethodValidationPostProcessor` 处理服务层校验。
+- 自定义约束与分组校验。
+
+**追问**：为什么校验没生效？缺少 `@Valid`、代理未生效、分组不匹配或异常被吞。
+
+### Q44. Spring WebFlux 的线程模型是什么？
+
+**结论**：基于 Reactor + Netty 事件循环，少量线程处理大量请求，阻塞操作会拖垮事件循环。
+
+**机制**：
+- 请求在 EventLoop 线程处理。
+- Mono/Flux 表达异步流。
+- 背压通过 request(n) 控制。
+- 阻塞 IO 应切换到弹性线程池。
+
+**追问**：WebFlux 一定比 MVC 快吗？高并发 IO 场景优势明显，简单同步业务未必。
+
+### Q45. Spring 6/7 的演进方向有哪些？
+
+**结论**：可观测性、ProblemDetail、HTTP Interface、AOT/Native、虚拟线程支持与 Jakarta 基线。
+
+**机制**：
+- Micrometer Observation 统一指标与追踪。
+- RFC7807 ProblemDetail 标准化错误响应。
+- `@HttpExchange` 声明式 HTTP 客户端。
+- 对虚拟线程的适配与配置。
+- 版本升级需关注 Jakarta 命名空间与依赖兼容。
+
+**追问**：升级 Spring 6/7 要注意什么？Jakarta EE 迁移、弃用 API、第三方库兼容与测试覆盖。
+
+---
+
+## 六、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -535,4 +601,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：40 题 · 详解**
+**题目数量：45 题 · 详解**

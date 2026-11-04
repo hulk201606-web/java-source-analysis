@@ -186,25 +186,25 @@ Netty(220) → Dubbo(221) → RocketMQ(222) → Kafka(223)
 
 | 编号 | 方向 | 题目数 | 配套源码文档 |
 |---|---|---|---|
-| [220](220_Netty面试题库.md) | Netty 线程模型/Pipeline/ByteBuf | 40 | [039](039_Netty源码解析.md) |
-| [221](221_Dubbo面试题库.md) | Dubbo SPI/暴露引用/容错/协议 | 35 | [035](035_Dubbo源码解析.md) |
-| [222](222_RocketMQ面试题库.md) | RocketMQ 存储/事务消息/消费 | 35 | [036](036_RocketMQ源码解析.md) |
-| [223](223_Kafka面试题库.md) | Kafka 副本/生产消费/KRaft | 35 | [038](038_Kafka源码解析.md) |
-| [224](224_JVM底层C++面试题库.md) | HotSpot 对象/GC/类加载/锁 | 35 | [007](007_JVM与GC源码解析.md) |
-| [225](225_JavaSecurity与Crypto面试题库.md) | JCA/JCE/TLS/密钥管理 | 35 | [013](013_网络IO与类加载源码解析.md) |
-| [226](226_JIT编译器面试题库.md) | C1/C2/分层编译/逃逸分析 | 35 | [224](224_JVM底层C++面试题库.md) |
-| [227](227_Java9+新特性面试题库.md) | JPMS/Records/虚拟线程/FFM | 37 | [015](015_UnsafeVarHandleSwitchPointLookupJPMS源码解析.md) |
-| [228](228_Java核心与并发面试题库.md) | 集合/并发/AQS/线程池/JMM/GC | 40 | [004](004_集合框架源码解析.md) |
-| [229](229_Spring体系面试题库.md) | IoC/循环依赖/AOP/事务/MVC/Boot | 40 | [016](016_Spring核心源码解析.md) |
-| [230](230_MySQL面试题库.md) | 索引/MVCC/锁/日志/优化/高可用 | 40 | [045](045_MySQL源码解析.md) |
-| [231](231_Redis面试题库.md) | 结构编码/持久化/集群/缓存/锁 | 40 | [040](040_Redis源码解析.md) |
-| [232](232_分布式与微服务面试题库.md) | CAP/分布式事务/治理/Raft | 40 | [085](085_分布式事务原理源码解析.md) |
-| [233](233_高并发数据一致性面试题库.md) | 缓存双写/幂等/库存/对账 | 40 | [231](231_Redis面试题库.md) |
-| [234](234_SpringCloud组件面试题库.md) | Nacos/Feign/Sentinel/Gateway/Seata | 40 | [022](022_Nacos源码解析.md) |
-| [235](235_Elasticsearch面试题库.md) | 倒排/Mapping/段合并/聚合/集群 | 40 | [037](037_Elasticsearch源码解析.md) |
-| [236](236_Flink面试题库.md) | 架构/Watermark/状态/Checkpoint/SQL | 40 | [051](051_Flink源码解析.md) |
-| [237](237_TiDB与TiKV面试题库.md) | Region/Raft/Percolator/MVCC/HTAP | 40 | [050](050_TiDB源码解析.md) |
-| [238](238_Kubernetes与云原生面试题库.md) | Pod/Service/调度/存储/发布 | 40 | [053](053_Kubernetes源码解析.md) |
+| [220](220_Netty面试题库.md) | Netty 线程模型/Pipeline/ByteBuf | 45 | [039](039_Netty源码解析.md) |
+| [221](221_Dubbo面试题库.md) | Dubbo SPI/暴露引用/容错/协议 | 45 | [035](035_Dubbo源码解析.md) |
+| [222](222_RocketMQ面试题库.md) | RocketMQ 存储/事务消息/消费 | 40 | [036](036_RocketMQ源码解析.md) |
+| [223](223_Kafka面试题库.md) | Kafka 副本/生产消费/KRaft | 40 | [038](038_Kafka源码解析.md) |
+| [224](224_JVM底层C++面试题库.md) | HotSpot 对象/GC/类加载/锁 | 40 | [007](007_JVM与GC源码解析.md) |
+| [225](225_JavaSecurity与Crypto面试题库.md) | JCA/JCE/TLS/密钥管理 | 40 | [013](013_网络IO与类加载源码解析.md) |
+| [226](226_JIT编译器面试题库.md) | C1/C2/分层编译/逃逸分析 | 40 | [224](224_JVM底层C++面试题库.md) |
+| [227](227_Java9+新特性面试题库.md) | JPMS/Records/虚拟线程/FFM | 42 | [015](015_UnsafeVarHandleSwitchPointLookupJPMS源码解析.md) |
+| [228](228_Java核心与并发面试题库.md) | 集合/并发/AQS/线程池/JMM/GC | 45 | [004](004_集合框架源码解析.md) |
+| [229](229_Spring体系面试题库.md) | IoC/循环依赖/AOP/事务/MVC/Boot | 45 | [016](016_Spring核心源码解析.md) |
+| [230](230_MySQL面试题库.md) | 索引/MVCC/锁/日志/优化/高可用 | 45 | [045](045_MySQL源码解析.md) |
+| [231](231_Redis面试题库.md) | 结构编码/持久化/集群/缓存/锁 | 45 | [040](040_Redis源码解析.md) |
+| [232](232_分布式与微服务面试题库.md) | CAP/分布式事务/治理/Raft | 45 | [085](085_分布式事务原理源码解析.md) |
+| [233](233_高并发数据一致性面试题库.md) | 缓存双写/幂等/库存/对账 | 45 | [231](231_Redis面试题库.md) |
+| [234](234_SpringCloud组件面试题库.md) | Nacos/Feign/Sentinel/Gateway/Seata | 45 | [022](022_Nacos源码解析.md) |
+| [235](235_Elasticsearch面试题库.md) | 倒排/Mapping/段合并/聚合/集群 | 45 | [037](037_Elasticsearch源码解析.md) |
+| [236](236_Flink面试题库.md) | 架构/Watermark/状态/Checkpoint/SQL | 45 | [051](051_Flink源码解析.md) |
+| [237](237_TiDB与TiKV面试题库.md) | Region/Raft/Percolator/MVCC/HTAP | 45 | [050](050_TiDB源码解析.md) |
+| [238](238_Kubernetes与云原生面试题库.md) | Pod/Service/调度/存储/发布 | 45 | [053](053_Kubernetes源码解析.md) |
 | [239](239_系统设计与场景面试题库.md) | 短链/秒杀/Feed/IM/支付/容量 | 45 | [085](085_分布式事务原理源码解析.md) |
 
 ### 4.5 题库去重与主题归属
@@ -218,6 +218,7 @@ Netty(220) → Dubbo(221) → RocketMQ(222) → Kafka(223)
 | 分布式锁 | [231 Q30–Q32](231_Redis面试题库.md)、[232 Q27–Q29](232_分布式与微服务面试题库.md) | 233 Q23、239 Q23 |
 | 缓存与数据库一致性 | [233 Q9–Q18](233_高并发数据一致性面试题库.md) | 231 Q28–Q29、239 Q5/Q26 |
 | 消息可靠/重复/顺序 | [232 Q14–Q16](232_分布式与微服务面试题库.md) | 222 Q22–Q27、233 Q33、239 Q27 |
+| 消息队列选型 | [222 Q35/Q40](222_RocketMQ面试题库.md) | 223 Q35、239 Q7 |
 | Spring Cloud 组件细节 | [234](234_SpringCloud组件面试题库.md) | 232 Q9/Q18/Q22–Q26 |
 | JVM / GC / JIT | [228 Q33–Q40](228_Java核心与并发面试题库.md)、[224](224_JVM底层C++面试题库.md)、[226](226_JIT编译器面试题库.md) | 227 仅保留 JPMS/语言特性 |
 | MySQL / TiDB MVCC | [230 Q11–Q22](230_MySQL面试题库.md)、[237 Q16–Q25](237_TiDB与TiKV面试题库.md) | 两篇互相引用，不重复实现细节 |

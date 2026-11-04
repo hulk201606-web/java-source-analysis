@@ -1,4 +1,4 @@
-# 234 · Spring Cloud 组件高频面试题库（40 题 · 详解）
+# 234 · Spring Cloud 组件高频面试题库（45 题 · 详解）
 
 > **方向**：Nacos、OpenFeign、Sentinel、Gateway、Seata、Resilience4j、链路追踪与配置中心  
 > **面试权重**：⭐⭐⭐⭐⭐（微服务组件必问）  
@@ -517,7 +517,71 @@
 
 ---
 
-## 七、速记清单
+## 七、进阶补充（Q41–Q45）
+
+### Q41. Spring Cloud 版本如何选型与兼容？
+
+**结论**：按 Spring Boot 版本选择对应的 Spring Cloud release train，组件与依赖必须整体对齐。
+
+**机制**：
+- Spring Cloud 版本与 Boot 版本有官方兼容矩阵。
+- 不同 train 会替换组件（如 Ribbon→LoadBalancer）。
+- 升级需同步 BOM、配置与客户端。
+- 先升级 Boot 再升级 Cloud，逐项回归。
+
+**追问**：能混用不同 Cloud 版本吗？不建议，BOM 与自动配置容易冲突。
+
+### Q42. Spring Cloud Gateway Server MVC 与 WebFlux 版有什么区别？
+
+**结论**：WebFlux 版基于 Reactor Netty，适合高并发网关；MVC 版基于 Servlet 栈，适合已有 MVC 体系与阻塞式过滤器。
+
+**机制**：
+- WebFlux 版非阻塞、吞吐高。
+- MVC 版复用 Servlet 生态与阻塞模型。
+- 过滤器/断言 API 有差异。
+- 选型看团队栈与性能要求。
+
+**追问**：MVC 版能替代 WebFlux 版吗？功能相近，但高并发下 WebFlux 更合适。
+
+### Q43. 从 Nacos 2.x 迁移到 3.x 要注意什么？
+
+**结论**：关注 gRPC/协议变化、鉴权、配置模型与客户端兼容，先灰度再全量。
+
+**机制**：
+- 3.x 强化 gRPC 与集群一致性；基础模型见 [Q1–Q8](234_SpringCloud组件面试题库.md)。
+- 客户端 SDK 与版本需匹配。
+- 配置迁移与命名空间兼容。
+- 监控注册与配置推送。
+
+**追问**：迁移期间双注册可以吗？可灰度双写，但需避免路由冲突。
+
+### Q44. Spring Cloud Config 的 import 与刷新机制是什么？
+
+**结论**：`spring.config.import` 从 Config Server 拉取配置，结合 Bus/RefreshScope 动态刷新。
+
+**机制**：
+- Config Data 在启动时导入外部配置；Config/Bus 基础见 [Q38](234_SpringCloud组件面试题库.md)。
+- Bus 广播变更事件。
+- `@RefreshScope` 重建 Bean。
+- 失败时回退本地配置。
+
+**追问**：刷新会中断请求吗？已有请求继续，新请求使用新配置，注意 Bean 状态重建。
+
+### Q45. 微服务可观测性如何统一？
+
+**结论**：指标、日志、追踪三件套统一上下文，traceId 贯穿网关、服务、消息与数据库。
+
+**机制**：
+- Micrometer 采集指标；TraceId 传播基础见 [Q37](234_SpringCloud组件面试题库.md)。
+- 日志 MDC 带 traceId/spanId。
+- W3C TraceContext 跨服务传播。
+- 消息/异步线程手动传递上下文。
+
+**追问**：异步/消息会断链吗？会，需在消息头与线程池包装中传递上下文。
+
+---
+
+## 八、速记清单
 
 | 组件 | 必背一句话 |
 |---|---|
@@ -533,4 +597,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：40 题 · 详解**
+**题目数量：45 题 · 详解**

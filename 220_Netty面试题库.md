@@ -1,4 +1,4 @@
-# 220 · Netty 高频面试题库（40 题 · 详解）
+# 220 · Netty 高频面试题库（45 题 · 详解）
 
 > **方向**：Netty 4.1.x 线程模型、Pipeline、ByteBuf、编解码与工程实践  
 > **面试权重**：⭐⭐⭐⭐⭐（网络框架必问）  
@@ -494,7 +494,72 @@
 
 ---
 
-## 七、速记清单
+## 七、进阶补充（Q41–Q45）
+
+### Q41. Netty 的 FastThreadLocal 与 ThreadLocal 有什么区别？
+
+**结论**：FastThreadLocal 用数组下标代替哈希表，减少冲突与清理开销，配合 FastThreadLocalThread 效果最佳。
+
+**机制**：
+- 每个 FastThreadLocal 分配稳定 index。
+- 线程内部用数组直接定位。
+- 需调用 `remove()` 避免残留。
+- 普通 Thread 上仍可用，但无法完全发挥优势。
+
+**追问**：FastThreadLocal 会内存泄漏吗？会，线程池复用时不 remove 会残留；Java ThreadLocal 基础见 [228 Q20](228_Java核心与并发面试题库.md)。
+
+### Q42. Netty 的 HashedWheelTimer 是什么？
+
+**结论**：基于时间轮的高效定时器，适合大量短周期任务，精度为 tick 级别。
+
+**机制**：
+- 任务按槽位分布，指针轮转触发。
+- 插入/删除近似 O(1)。
+- 不适合超长延时或高精度场景。
+- Netty 用于空闲检测、重连等。
+
+**追问**：时间轮精度如何保证？通过 tickDuration 与 wheelSize 平衡精度与内存。
+
+### Q43. Pipeline 中的异常如何传播？
+
+**结论**：入站异常沿 `exceptionCaught` 向后传播，默认最终关闭 Channel；出站异常通常体现在写 Future。
+
+**机制**：
+- Handler 抛异常触发当前 Context 的 exceptionCaught。
+- 未处理则继续向后传播。
+- 默认实现记录日志并关闭连接。
+- 写失败通过 ChannelFuture 通知。
+
+**追问**：为什么异常会静默？Handler 吞掉异常或未覆写 exceptionCaught，需统一兜底。
+
+### Q44. 常用的 ChannelOption 有哪些？
+
+**结论**：SO_BACKLOG、TCP_NODELAY、SO_KEEPALIVE、SO_REUSEADDR、ALLOCATOR、写水位线等。
+
+**机制**：
+- `SO_BACKLOG` 控制 Accept 队列。
+- `TCP_NODELAY` 禁用 Nagle，降低小包延迟。
+- `SO_KEEPALIVE` 依赖系统级保活。
+- `ALLOCATOR` 选择池化/堆外分配器。
+- 水位线控制写缓冲。
+
+**追问**：TCP_NODELAY 一定开启吗？低延迟交互建议开启，大吞吐批量场景可权衡。
+
+### Q45. EventLoop 的任务队列会无限增长吗？
+
+**结论**：NioEventLoop 使用无界任务队列，任务提交不会拒绝，但堆积会占用内存并延迟 IO。
+
+**机制**：
+- `execute` 入队并唤醒 Selector。
+- 无界队列没有容量保护。
+- 大量任务会拖慢 IO 处理。
+- 关闭时任务可能被拒绝/丢弃。
+
+**追问**：如何防任务堆积？业务侧限流、监控队列长度、避免在 EventLoop 提交大量任务；任务提交方式见 [Q6](220_Netty面试题库.md)。
+
+---
+
+## 八、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -508,4 +573,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：40 题 · 详解**
+**题目数量：45 题 · 详解**
