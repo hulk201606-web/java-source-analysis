@@ -1,4 +1,4 @@
-# 238 · Kubernetes 与云原生高频面试题库（50 题 · 详解）
+# 238 · Kubernetes 与云原生高频面试题库（55 题 · 详解）
 
 > **方向**：K8s 架构、工作负载、网络、调度、资源、存储、发布与运维  
 > **面试权重**：⭐⭐⭐⭐⭐（云原生与运维必问）  
@@ -640,7 +640,71 @@
 
 ---
 
-## 九、速记清单
+## 九、进阶补充（Q51–Q55）
+
+### Q51. InitContainer 与 Sidecar 有什么区别？
+
+**结论**：InitContainer 在主容器前串行执行并完成；Sidecar 与主容器并行运行，提供辅助能力。
+
+**机制**：
+- Init 按顺序执行，失败会重试/阻塞。
+- 常用于初始化配置、等待依赖。
+- Sidecar 常用于日志、代理、监控。
+- 共享网络/Volume，但生命周期不同。
+
+**追问**：Sidecar 会延长 Pod 生命周期吗？会，需处理优雅退出；探针见 [Q9](238_Kubernetes与云原生面试题库.md)。
+
+### Q52. Pod 的生命周期阶段有哪些？
+
+**结论**：Pending、Running、Succeeded、Failed、Unknown，容器还有 Waiting/Running/Terminated 状态。
+
+**机制**：
+- Pending 包括调度与镜像拉取。
+- Running 至少一个容器运行。
+- Succeeded/Failed 为终态。
+- 重启策略决定是否重建容器。
+
+**追问**：Pod 一直 Pending 怎么查？看调度事件、资源、亲和与 PVC；基础见 [Q10](238_Kubernetes与云原生面试题库.md)。
+
+### Q53. topologySpreadConstraints 有什么用？
+
+**结论**：按拓扑域均匀分散 Pod，避免所有副本集中在单节点/单可用区。
+
+**机制**：
+- 定义 maxSkew、topologyKey、whenUnsatisfiable。
+- 支持节点/可用区级别分散。
+- 与亲和/反亲和互补。
+- 影响调度成功率与可用性。
+
+**追问**：与 podAntiAffinity 区别？Spread 更强调均衡分布与倾斜阈值。
+
+### Q54. Job 与 CronJob 的进阶用法有哪些？
+
+**结论**：并发策略、完成数、重试限制、TTL 清理与死信处理，保证批处理任务可靠。
+
+**机制**：
+- completions/parallelism 控制并发。
+- backoffLimit 控制重试。
+- ttlSecondsAfterFinished 自动清理。
+- CronJob 需防重叠与错过调度。
+
+**追问**：CronJob 会重复执行吗？多实例/重叠策略不当会，需幂等与 concurrencyPolicy。
+
+### Q55. Pod 驱逐与 PDB 如何配合？
+
+**结论**：节点压力或维护触发驱逐，PDB 限制自愿驱逐的最小可用副本，避免容量骤降。
+
+**机制**：
+- 自愿驱逐（drain）遵守 PDB。
+- 节点压力驱逐不保证 PDB。
+- 设置 minAvailable/maxUnavailable。
+- 与多副本、反亲和配合。
+
+**追问**：PDB 能防止所有 Pod 被驱逐吗？不能，非自愿驱逐仍可能发生；QoS 见 [Q23](238_Kubernetes与云原生面试题库.md)。
+
+---
+
+## 十、速记清单
 
 | 主题 | 必背一句话 |
 |---|---|
@@ -656,4 +720,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：50 题 · 详解**
+**题目数量：55 题 · 详解**

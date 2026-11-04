@@ -250,16 +250,15 @@
 
 **追问**：低停顿收集器适合所有业务吗？不适合，吞吐与内存开销更高，需按 SLA 权衡。
 
-### Q20. GC Roots 有哪些？
+### Q20. HotSpot 视角的 GC Roots 有哪些？
 
-**结论**：线程栈局部变量、静态字段、常量、JNI 引用、活动线程、同步监视器、JVM 内部结构等。
+**结论**：Java 层 Roots（线程栈、静态字段、JNI 引用等）与 JVM 内部 Roots（Universe、VM 线程、JNIHandle 等）共同构成可达性起点。
 
 **机制**：
-- Java 线程栈帧中的引用。
-- 类的静态字段与常量池。
-- JNI 全局/局部引用。
-- 活跃的 Thread 对象与锁对象。
-- GC 会从 Roots 出发做可达性分析。
+- Java 层 Root 分类见 [228 Q35](228_Java核心与并发面试题库.md)。
+- HotSpot 额外扫描 Universe/SystemDictionary、VM 线程与 JNI 句柄。
+- 不同 GC 收集器枚举 Root 的实现略有差异。
+- Root 扫描是 STW 阶段的重要部分。
 
 **追问**：为什么不用引用计数？循环引用无法回收，且维护成本高。
 
