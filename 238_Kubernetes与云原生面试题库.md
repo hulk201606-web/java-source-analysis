@@ -1,4 +1,4 @@
-# 238 · Kubernetes 与云原生高频面试题库（55 题 · 详解）
+# 238 · Kubernetes 与云原生高频面试题库（60 题 · 详解）
 
 > **方向**：K8s 架构、工作负载、网络、调度、资源、存储、发布与运维  
 > **面试权重**：⭐⭐⭐⭐⭐（云原生与运维必问）  
@@ -576,7 +576,7 @@
 
 ---
 
-## 八、进阶补充（Q46–Q50）
+## 七、进阶补充（Q46–Q50）
 
 ### Q46. CSI 是什么？存储插件如何工作？
 
@@ -640,7 +640,7 @@
 
 ---
 
-## 九、进阶补充（Q51–Q55）
+## 八、进阶补充（Q51–Q55）
 
 ### Q51. InitContainer 与 Sidecar 有什么区别？
 
@@ -704,6 +704,75 @@
 
 ---
 
+## 九、进阶补充（Q56–Q60）
+
+### Q56. Pod 优雅终止的流程是什么？
+
+**结论**：删除 Pod 时先摘除 Endpoints、执行 preStop、发送 SIGTERM，超过宽限期才 SIGKILL，应用需在此期间完成收尾。
+
+**机制**：
+- Pod 进入 Terminating，从 Service Endpoints 摘除。
+- 执行 `preStop` hook（脚本或 sleep）。
+- 容器收到 SIGTERM，应用停止接收新请求并处理在途请求。
+- 超过 `terminationGracePeriodSeconds` 后强制 SIGKILL。
+- 配合 PDB 与滚动更新避免整体不可用。
+
+**追问**：preStop 里为什么要 sleep 几秒？等 kube-proxy 与网关刷新摘除结果，避免新请求打到正在退出的 Pod；优雅停机见 [234 Q60](234_SpringCloud组件面试题库.md)。
+
+### Q57. 准入控制 Webhook 怎么用？
+
+**结论**：在对象写入 etcd 前拦截，Mutating 负责补默认值/改字段，Validating 负责校验策略，可拒绝请求。
+
+**机制**：
+- Mutating 先执行，Validating 后执行。
+- 通过规则匹配资源类型与操作（CREATE/UPDATE）。
+- Validating 可返回拒绝原因，阻止对象落库。
+- `failurePolicy` 决定 Webhook 不可用时放行还是拒绝。
+- 需高可用与低延迟，避免阻塞 API Server。
+
+**追问**：Webhook 挂了会怎样？`Fail` 策略会阻断资源创建，`Ignore` 则放行；安全基线见 [Q43](238_Kubernetes与云原生面试题库.md)。
+
+### Q58. Pod 拓扑管理与 CPU 绑核怎么用？
+
+**结论**：拓扑管理器配合 CPU Manager 与设备管理器，为 Guaranteed Pod 做 NUMA/CPU 对齐，降低跨 NUMA 访问开销。
+
+**机制**：
+- 需要 static CPU 管理策略与 Guaranteed QoS。
+- 拓扑管理器按 NUMA 对齐分配 CPU 与设备。
+- 作用域可选 container 或 pod。
+- 无法满足对齐时可能拒绝分配或回退。
+- 适合低延迟与高性能计算负载。
+
+**追问**：所有 Pod 都能绑核吗？不能，需 Guaranteed QoS 与整核分配；QoS 见 [Q23](238_Kubernetes与云原生面试题库.md)。
+
+### Q59. kube-proxy 的 iptables 与 IPVS 模式有什么区别？
+
+**结论**：iptables 用规则链转发，服务规模大时规则膨胀；IPVS 用哈希表与多种调度算法，大规模性能更好。
+
+**机制**：
+- iptables 逐条匹配规则，服务与 Endpoints 多时延迟上升。
+- IPVS 基于内核哈希表，支持 rr/wrr/lc 等调度。
+- IPVS 需要内核模块与额外运维。
+- 两者都依赖 kube-proxy 同步 Endpoints。
+- 新版本提供 nftables 模式作为替代。
+
+**追问**：大规模集群怎么选？服务多时选 IPVS/nftables，小集群 iptables 足够；Service 类型见 [Q11](238_Kubernetes与云原生面试题库.md)。
+
+### Q60. etcd 与 API Server 的高可用如何设计？
+
+**结论**：etcd 用奇数节点 Raft 集群，API Server 无状态多实例加负载均衡，客户端配置多端点实现故障切换。
+
+**机制**：
+- etcd 通常 3 或 5 节点，保证多数派可用。
+- API Server 无状态，多实例共享同一 etcd。
+- 前置 LB 或客户端轮询多个 API Server。
+- 控制面组件通过 `--server` 列表访问。
+- 定期快照备份 etcd 并演练恢复。
+
+**追问**：etcd 用偶数节点更好吗？不是，偶数不提升容错还会降低可用性；整体架构见 [Q1](238_Kubernetes与云原生面试题库.md)。
+
+---
+
 ## 十、速记清单
 
 | 主题 | 必背一句话 |
@@ -720,4 +789,4 @@
 ---
 
 **文档版本：v1.0 · 2026-11-05**  
-**题目数量：55 题 · 详解**
+**题目数量：60 题 · 详解**

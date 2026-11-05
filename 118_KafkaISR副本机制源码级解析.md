@@ -183,10 +183,10 @@
 //   → 保证高可用的同时尽量不丢数据
 //
 // ★ 极端情况：所有 ISR 都挂了怎么办？
-//   unclean.leader.election.enable=false（默认 true 允许）
+//   unclean.leader.election.enable（默认 false）
 //   → false：不允许从 OSR 选 Leader → 分区不可用但不丢数据
 //   → true：允许从 OSR 选 → 分区可用但可能丢数据
-//   → 生产通常设为 true（可用性优先）
+//   → 生产通常保持 false（一致性优先）；仅在可容忍丢数据的场景开启
 //
 ```
 
@@ -239,7 +239,7 @@
 | 6 | Leader 选举源码？| core/.../controller/Controller.scala → `onLeaderFailover()` |
 | 7 | acks 三种语义？| **0（不保证）+ 1（Leader 本地写）+ all（所有 ISR 同步）** |
 | 8 | min.insync.replicas？| ISR 最少副本数；acks=all 时 ISR < minIsr → Leader 拒绝写入 |
-| 9 | unclean.leader.election？| **true：允许从 OSR 选 Leader（可用性优先，可能丢数据）；false：不允许（一致性优先）** |
+| 9 | unclean.leader.election？| **默认 false：不允许从 OSR 选 Leader（一致性优先）；true：允许，可用性优先但可能丢数据** |
 | 10 | Kafka vs Raft vs TiKV ISR？| Kafka ISR 动态集合；Raft 全副本参与；TiKV Raft 3 Peer Quorum |
 | 11 | Producer 重试？| 默认 3 次 + retry.backoff.ms=100ms；可能导致重复消费 |
 | 12 | 面试最高频考点排序？| **1. ISR 动态变化 2. Leader 选举 3. acks 三种语义 4. HW 5. min.insync.replicas** |
@@ -250,7 +250,7 @@
 | 17 | ISR 踢出阈值？| **replica.lag.time.max.ms=30000ms** + replica.lag.max.messages（默认无限制）|
 | 18 | HW vs LEO？| HW：所有 ISR 同步的最大 Offset；LEO（Log End Offset）：Leader 最新写入 Offset |
 | 19 | ISR 检查频率？| **默认 10s**（由 replica.lag.time.max.ms 控制）|
-| 20 | 生产配置推荐？| acks=all + min.insync.replicas=2 + unclean.leader.election.enable=true |
+| 20 | 生产配置推荐？| acks=all + min.insync.replicas=2 + unclean.leader.election.enable=false（默认） |
 | 21 | 2024 新特性？| Kafka 3.7+ KRaft 生产可用 + Tiered Storage（冷热分层）|
 | 22 | 面试高频场景？| Leader 切换 + ISR 踢出 + acks=all + min.insync.replicas 防脑裂 |
 
